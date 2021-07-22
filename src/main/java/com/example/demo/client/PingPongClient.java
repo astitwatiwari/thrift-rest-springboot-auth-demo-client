@@ -1,6 +1,7 @@
 package com.example.demo.client;
 
 import com.example.demo.TAuthenticationService;
+import com.example.demo.TPingPongService;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TJSONProtocol;
 import org.apache.thrift.protocol.TProtocol;
@@ -8,15 +9,17 @@ import org.apache.thrift.transport.THttpClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-@Component
-public class AuthenticationClient {
-    @Value("${authenticationService.url}")
-    String authenticationUrl;
+import java.util.List;
 
-    public boolean authenticateUser(String userName, String password) throws TException {
-        THttpClient tHttpClient = new THttpClient(authenticationUrl);
+@Component
+public class PingPongClient {
+    @Value("${pingpongservice.url}")
+    String pingpongserviceUrl;
+
+    public List<Integer> ping() throws TException {
+        THttpClient tHttpClient = new THttpClient(pingpongserviceUrl);
         TProtocol protocol = new TJSONProtocol(tHttpClient);
-        TAuthenticationService.Client client= new TAuthenticationService.Client(protocol);
-        return client.authenticateUser(userName, password);
+        TPingPongService.Client client= new TPingPongService.Client(protocol);
+        return client.ping().getItems();
     }
 }
